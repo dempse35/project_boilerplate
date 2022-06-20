@@ -2,24 +2,27 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
+    watchFiles: "./client/style.css",
+    static: {
+      directory: path.join(__dirname, "dist"),
+      publicPath: "/"
+    },
     compress: true,
     port: 9000,
-    historyApiFallback: true, //navigation
-    proxy: [
-      {
-        context: () => true,
-        target: "http://localhost:3000",
-        secure: false
-      }
-    ]
+    historyApiFallback: true //navigation
+    // proxy: [
+    //   {
+    //     context: () => true,
+    //     target: "http://localhost:3000",
+    //     secure: false
+    //   }
+    // ]
   },
 
-  devtool: "cheap-eval-source-map", //fast build, super fast rebuilds
+  devtool: "eval-cheap-source-map",
   performance: {
     maxEntrypointSize: 10000,
     maxAssetSize: 10000,
@@ -51,7 +54,6 @@ module.exports = {
             loader: "css-loader",
 
             options: {
-              minimize: true,
               sourceMap: true
             }
           }
@@ -62,7 +64,6 @@ module.exports = {
         use: {
           loader: "html-loader",
           options: {
-            attrs: [":data-src"],
             minimize: true
           }
         }
@@ -91,8 +92,7 @@ module.exports = {
       //minify that css
       filename: "[name]-[hash].css",
       chunkFilename: "[id][hash].css"
-    }),
-    new UglifyJsPlugin({ sourceMap: true }) //smash everything
+    })
   ],
   mode: "production"
 };
